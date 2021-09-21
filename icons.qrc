@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/icons/home.svg</file>
+        <file>assets/icons/file.svg</file>
+        <file>assets/icons/setting.svg</file>
+        <file>assets/icons/folder-close.svg</file>
+    </qresource>
+</RCC>
