@@ -3,6 +3,11 @@
 
 #include <QMainWindow>
 #include <QWidget>
+#include <QStackedWidget>
+
+#include "settingpage.h"
+#include "jobpage.h"
+#include "fakedata.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,13 +21,29 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
     Ui::MainWindow *ui;
-    QWidget *page;
 
-    QWidget *home_page;
+    // 子页面
+    JobPage *jobPage;
+    SettingPage *settingPage;
 
-    template<class T>
-    void buildHomePageList(int n);
+    // 页面展示区域
+    QStackedWidget *pageContent;
+
+    // 文件树
+    FakeFileTree* root;
+    QVector<FakeFileTree*> path;
+
+    void buildHomePageList();
+    void pushPath(int i);
+    void popPath(int d = 1);
+
+private slots:
+    void on_toolButton_2_clicked();
+    void on_toolButton_clicked();
+    void on_pushButton_clicked();
+    void on_back_button_triggered(QAction *arg1);
+    void on_back_button_clicked();
 };
+
 #endif // MAINWINDOW_H

@@ -16,17 +16,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    homewidget.cpp \
+    fakedata.cpp \
+    jobpage.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    settingpage.cpp
 
 HEADERS += \
-    homewidget.h \
-    mainwindow.h
+    fakedata.h \
+    jobpage.h \
+    mainwindow.h \
+    settingpage.h
 
 FORMS += \
-    homewidget.ui \
-    mainwindow.ui
+    jobpage.ui \
+    mainwindow.ui \
+    settingpage.ui
 
 TRANSLATIONS += \
     BackupMyFile_zh_CN.ts
