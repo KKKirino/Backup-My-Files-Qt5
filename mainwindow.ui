@@ -303,7 +303,7 @@ QLabel, QToolButton {
 }
 
 QPushButton, QToolButton {
-	background-color: rgba(255, 255, 255);
+	background-color: rgb(255, 255, 255);
 	border: 1px solid rgba(0, 0, 0, 0.05);
 	border-radius: 5px;
 	padding: 0 5px;
@@ -497,6 +497,13 @@ QCheckBox {
               </widget>
              </item>
              <item>
+              <widget class="QToolButton" name="decrypt_btn">
+               <property name="text">
+                <string>解密</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QToolButton" name="zip_btn">
                <property name="text">
                 <string>压缩</string>
@@ -504,9 +511,9 @@ QCheckBox {
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="backup_btn">
+              <widget class="QToolButton" name="unzip_btn">
                <property name="text">
-                <string>备份</string>
+                <string>解压</string>
                </property>
               </widget>
              </item>
@@ -514,6 +521,20 @@ QCheckBox {
               <widget class="QToolButton" name="pack_btn">
                <property name="text">
                 <string>打包</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="unpack_btn">
+               <property name="text">
+                <string>解包</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="backup_btn">
+               <property name="text">
+                <string>备份</string>
                </property>
               </widget>
              </item>

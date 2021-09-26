@@ -1,4 +1,5 @@
 #include "job.h"
+#include "rsa.h"
 
 Job::Job(QObject *parent) : QObject(parent)
 {
@@ -24,12 +25,12 @@ void Job::startJob(int type,
 //    case JobType::DECOMPRESS:
 //        decompress(info);
 //        break;
-//    case JobType::ENCRYPT:
-//        encrypt(info);
-//        break;
-//    case JobType::DECTYPRT:
-//        decrypt(info);
-//        break;
+    case JobType::ENCRYPT:
+        encrypt(packPaths, path, destPath);
+        break;
+    case JobType::DECTYPRT:
+        decrypt(packPaths, path, destPath);
+        break;
     case JobType::BACKUP:
         backup(packPaths, "", destPath);
         break;
@@ -54,7 +55,7 @@ void Job::pack(QList<QString> packPaths,
     }
 
     QString desFileName = _packPaths.first().fileName();
-    if (packPaths.count() > 1) desFileName += QString("等 %1 个文件").arg(packPaths.count() - 1);
+    if (packPaths.count() > 1) desFileName += QString("等 %1 个文件").arg(packPaths.count());
     desFileName += ".pack";
 
     auto destFilePath = destFolder.filePath(desFileName);
@@ -201,11 +202,11 @@ void Job::unpack(QList<QString> packPaths,
         source >> size;
         char* content = new char[size]();
         source >> content;
-//        qDebug("read file: %d", size);
+        qDebug("read file: %d", size);
         // 根据相对路径，写入目录结构
         QString relativePath = basePath.relativeFilePath(allPaths[i]);
 //        qDebug("relative");
-//        qDebug(relativePath.toUtf8());
+        qDebug(relativePath.toUtf8());
         QString destFilePath = destFolder.absoluteFilePath(relativePath);
 
         // 如果路径不存在，则创建对应的路径
@@ -216,7 +217,7 @@ void Job::unpack(QList<QString> packPaths,
         // 写入文件内容
         QFile destOutput(destFilePath);
         destOutput.open(QFile::WriteOnly);
-        destOutput.write(content);
+        destOutput.write(content, size);
         destOutput.flush();
         destOutput.close();
         delete [] content;
@@ -234,8 +235,75 @@ void Job::unpack(QList<QString> packPaths,
 }
 //void Job::compress(JobInfo info) {};
 //void Job::decompress(JobInfo info) {};
-//void Job::encrypt(JobInfo info) {};
-//void Job::decrypt(JobInfo info) {};
+void Job::encrypt(QList<QString> packPaths,
+                  QString path,
+                  QString destPath)
+{
+    QFile file(path);
+    if (!file.exists()) return emit jobFinished("待加密文件不存在");
+
+    file.open(QFile::ReadOnly);
+    auto fileContent = file.readAll();
+
+    Rsa rsa;
+//    Key key = rsa.produce_keys();
+    Key key({221, 185, 137}); // 密钥先写死，不可变
+
+    qDebug("%d %d %d", key.dkey, key.ekey, key.pkey);
+
+    QString encFilePath = QString("%1_%2_%3.enc").arg(path).arg(key.pkey).arg(key.dkey);
+    QFile outFile(encFilePath);
+    outFile.open(QFile::WriteOnly);
+    QDataStream out(&outFile);
+
+    int count = 0;
+    for (auto data : fileContent)
+    {
+        emit jobUpdated(count++, fileContent.size());
+        int encryptData = rsa.endecrypt((int)data, key.ekey, key.pkey);
+        out << encryptData;
+    }
+
+    outFile.flush();
+    outFile.close();
+
+    emit jobFinished(QString("加密完成"));
+//    decrypt({}, encFilePath, "", key.pkey, key.dkey);
+};
+
+void Job::decrypt(QList<QString> packPaths,
+                  QString path,
+                  QString destPath)
+{
+    QFile file(path);
+    if (!file.exists()) return emit jobFinished("待解密文件不存在");
+
+    file.open(QFile::ReadOnly);
+    auto fileContent = file.readAll();
+
+    Rsa rsa;
+
+    QFile outFile(path + ".dec");
+    outFile.open(QFile::WriteOnly);
+    QDataStream out(&outFile);
+
+    for (int i = 0; i < fileContent.size(); i += 4)
+    {
+        emit jobUpdated(i, fileContent.size());
+        int data = 0;
+        for (int j = 0; j < 4; j += 1) {
+            data <<= 8;
+            data |= fileContent[i + j];
+        }
+        signed char decryptData = rsa.endecrypt(data, 221, 137);
+        out << decryptData;
+    }
+
+    outFile.flush();
+    outFile.close();
+
+    emit jobFinished("解密完成");
+};
 void Job::backup(QList<QString> packPaths,
                  QString path,
                  QString destPath) {

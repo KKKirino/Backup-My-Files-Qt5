@@ -64,6 +64,10 @@ private slots:
     void on_unselect_all_btn_clicked();
     void on_pack_btn_clicked();
     void on_backup_btn_clicked();
+    void on_unzip_btn_clicked();
+    void on_unpack_btn_clicked();
+    void on_encrypt_btn_clicked();
+    void on_decrypt_btn_clicked();
 };
 
 #endif // MAINWINDOW_H

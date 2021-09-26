@@ -35,8 +35,13 @@
 	background: rgba(10, 28, 86, 50);
 }
 
+#job_name {
+	font-size: 12px;
+}
+
 #job_status {
 	color: rgba(0, 0, 0, 0.6);
+	font-size: 12px;
 }
 
 QLabel {

@@ -24,6 +24,7 @@ SOURCES += \
     job_page.cpp \
     main.cpp \
     mainwindow.cpp \
+    rsa.cpp \
     setting_page.cpp
 
 HEADERS += \
@@ -34,6 +35,7 @@ HEADERS += \
     job_item.h \
     job_page.h \
     mainwindow.h \
+    rsa.h \
     setting_page.h
 
 FORMS += \

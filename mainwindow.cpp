@@ -240,3 +240,53 @@ void MainWindow::on_backup_btn_clicked()
     job->start(Job::JobType::BACKUP, filePaths, "", destPath);
     gotoJobPage();
 }
+
+void MainWindow::on_unzip_btn_clicked()
+{
+
+}
+
+void MainWindow::on_unpack_btn_clicked()
+{
+    // 解包文件，只能解包单个文件
+    if (selectedPath.count() != 1) return;
+    auto filePaths = getSelectedPath();
+    QString name = getJobName(filePaths);
+
+    auto job = jobPage->createJob(name, "等待开始", 0);
+
+    // 选择打包路径
+    QString destPath = QFileDialog::getExistingDirectory(this, tr("请选择解包位置"));
+    job->start(Job::JobType::UNPACK, {}, filePaths[0], destPath);
+    gotoJobPage();
+}
+
+void MainWindow::on_encrypt_btn_clicked()
+{
+    // 加密单个文件
+    if (selectedPath.count() != 1) return;
+    auto filePaths = getSelectedPath();
+    QString name = getJobName(filePaths);
+
+    auto job = jobPage->createJob(name, "等待开始", 0);
+
+    // 选择加密路径
+    QString destPath = QFileDialog::getExistingDirectory(this, tr("请选择加密文件存储位置"));
+    job->start(Job::JobType::ENCRYPT, {}, filePaths[0], destPath);
+    gotoJobPage();
+}
+
+void MainWindow::on_decrypt_btn_clicked()
+{
+    // 解密单个文件
+    if (selectedPath.count() != 1) return;
+    auto filePaths = getSelectedPath();
+    QString name = getJobName(filePaths);
+
+    auto job = jobPage->createJob(name, "等待开始", 0);
+
+    // 选择解密路径
+    QString destPath = QFileDialog::getExistingDirectory(this, tr("请选择解密文件存储位置"));
+    job->start(Job::JobType::DECTYPRT, {}, filePaths[0], destPath);
+    gotoJobPage();
+}

@@ -19,8 +19,8 @@ public:
         UNPACK,
 //        COMPRESS,
 //        DECOMPRESS,
-//        ENCRYPT,
-//        DECTYPRT,
+        ENCRYPT,
+        DECTYPRT,
         BACKUP
     };
 
@@ -44,8 +44,12 @@ public:
                 bool shouldRemoveSource = false);
 //    void compress(JobInfo info);
 //    void decompress(JobInfo info);
-//    void encrypt(JobInfo info);
-//    void decrypt(JobInfo info);
+    void encrypt(QList<QString> packPaths,
+                 QString path,
+                 QString destPath);
+    void decrypt(QList<QString> packPaths,
+                 QString path,
+                 QString destPath);
     void backup(QList<QString> packPaths,
                 QString path,
                 QString destPath);
