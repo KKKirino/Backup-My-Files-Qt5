@@ -4,10 +4,13 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QStackedWidget>
+#include <QSet>
+#include <QFileDialog>
 
-#include "settingpage.h"
-#include "jobpage.h"
-#include "fakedata.h"
+#include "setting_page.h"
+#include "job_page.h"
+#include "fake_data.h"
+#include "disk_file.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,12 +34,22 @@ public:
     QStackedWidget *pageContent;
 
     // 文件树
-    FakeFileTree* root;
-    QVector<FakeFileTree*> path;
+    QFileInfo path;
+    QSet<int> selectedPath;
+    void togglePath(int index);
+    void selectPath(int index);
+    void unselectPath(int index);
+    void selectAll();
+    void clearSelected();
+    void updateSelectStatus();
 
     void buildHomePageList();
     void pushPath(int i);
     void popPath(int d = 1);
+    QFileInfoList getChildren();
+    QList<QString> getSelectedPath();
+    QString getJobName(QList<QString> filePaths);
+    void gotoJobPage();
 
 private slots:
     void on_toolButton_2_clicked();
@@ -44,6 +57,13 @@ private slots:
     void on_pushButton_clicked();
     void on_back_button_triggered(QAction *arg1);
     void on_back_button_clicked();
+    void on_toolButton_3_clicked();
+    void on_path_textChanged(const QString &arg1);
+    void on_path_returnPressed();
+    void on_select_all_btn_clicked();
+    void on_unselect_all_btn_clicked();
+    void on_pack_btn_clicked();
+    void on_backup_btn_clicked();
 };
 
 #endif // MAINWINDOW_H

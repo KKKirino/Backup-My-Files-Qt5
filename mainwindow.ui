@@ -271,6 +271,7 @@ QLabel, QToolButton {
 .QWidget #title {
 	margin: 10px 0;
 	font-weight: bold;
+	font-size: 24px;
 }
 
 .QWidget QLineEdit {
@@ -302,12 +303,37 @@ QLabel, QToolButton {
 }
 
 QPushButton, QToolButton {
-	background-color: rgba(255, 255, 255, 0);
-	border: 0;
+	background-color: rgba(255, 255, 255);
+	border: 1px solid rgba(0, 0, 0, 0.05);
+	border-radius: 5px;
+	padding: 0 5px;
+	font-size: 12px;
 }
 
 QToolButton:hover {
-	color: blue;
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+#file_list_item {
+	border: 1px solid #eee;
+	border-radius: 5px;
+}
+
+#file_list_item:hover {
+	background: rgb(236, 236, 236);
+}
+
+#file_item_icon {
+	margin: 10px;
+}
+
+#file_name {
+	font-size: 14px;
+}
+
+QCheckBox {
+	margin-left: 10px;
+	padding-left: 10px;
 }</string>
        </property>
        <layout class="QVBoxLayout" name="page">
@@ -336,7 +362,7 @@ QToolButton:hover {
             <property name="font">
              <font>
               <family>微软雅黑</family>
-              <pointsize>14</pointsize>
+              <pointsize>-1</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -415,7 +441,7 @@ QToolButton:hover {
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <property name="spacing">
-              <number>12</number>
+              <number>5</number>
              </property>
              <property name="leftMargin">
               <number>0</number>
@@ -430,7 +456,7 @@ QToolButton:hover {
               <number>10</number>
              </property>
              <item>
-              <widget class="QLabel" name="label">
+              <widget class="QLabel" name="select_status">
                <property name="text">
                 <string>已选中 10 项</string>
                </property>
@@ -450,30 +476,44 @@ QToolButton:hover {
               </spacer>
              </item>
              <item>
-              <widget class="QToolButton" name="toolButton_4">
+              <widget class="QToolButton" name="select_all_btn">
                <property name="text">
                 <string>全选</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="toolButton_4">
+              <widget class="QToolButton" name="unselect_all_btn">
                <property name="text">
                 <string>清除选中</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="toolButton_3">
+              <widget class="QToolButton" name="encrypt_btn">
                <property name="text">
                 <string>加密</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="toolButton_2">
+              <widget class="QToolButton" name="zip_btn">
+               <property name="text">
+                <string>压缩</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="backup_btn">
                <property name="text">
                 <string>备份</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="pack_btn">
+               <property name="text">
+                <string>打包</string>
                </property>
               </widget>
              </item>
@@ -483,27 +523,7 @@ QToolButton:hover {
           <item>
            <widget class="QScrollArea" name="file_list">
             <property name="styleSheet">
-             <string notr="true">#file_list_item {
-	border: 1px solid #eee;
-	border-radius: 5px;
-}
-
-#file_list_item:hover {
-	background: rgb(236, 236, 236);
-}
-
-#file_item_icon {
-	margin: 10px;
-}
-
-#file_name {
-	font-size: 20px;
-}
-
-QCheckBox {
-	margin-left: 10px;
-	padding-left: 10px;
-}</string>
+             <string notr="true"/>
             </property>
             <property name="widgetResizable">
              <bool>true</bool>
@@ -514,7 +534,7 @@ QCheckBox {
                <x>0</x>
                <y>0</y>
                <width>678</width>
-               <height>410</height>
+               <height>400</height>
               </rect>
              </property>
              <property name="sizePolicy">

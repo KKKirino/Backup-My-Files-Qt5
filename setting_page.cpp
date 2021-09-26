@@ -1,5 +1,5 @@
-#include "settingpage.h"
-#include "ui_settingpage.h"
+#include "setting_page.h"
+#include "ui_setting_page.h"
 
 SettingPage::SettingPage(QWidget *parent) :
     QWidget(parent),

@@ -1,4 +1,4 @@
-#include "fakedata.h"
+#include "fake_data.h"
 #include <qalgorithms.h>
 
 FakeData::FakeData()

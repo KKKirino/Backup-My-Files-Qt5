@@ -16,22 +16,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    fakedata.cpp \
-    jobpage.cpp \
+    disk_file.cpp \
+    fake_data.cpp \
+    file_list_item.cpp \
+    job.cpp \
+    job_item.cpp \
+    job_page.cpp \
     main.cpp \
     mainwindow.cpp \
-    settingpage.cpp
+    setting_page.cpp
 
 HEADERS += \
-    fakedata.h \
-    jobpage.h \
+    disk_file.h \
+    fake_data.h \
+    file_list_item.h \
+    job.h \
+    job_item.h \
+    job_page.h \
     mainwindow.h \
-    settingpage.h
+    setting_page.h
 
 FORMS += \
-    jobpage.ui \
+    file_list_item.ui \
+    job_item.ui \
+    job_page.ui \
     mainwindow.ui \
-    settingpage.ui
+    setting_page.ui
 
 TRANSLATIONS += \
     BackupMyFile_zh_CN.ts
