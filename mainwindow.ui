@@ -538,6 +538,13 @@ QCheckBox {
                </property>
               </widget>
              </item>
+             <item>
+              <widget class="QToolButton" name="restore_btn">
+               <property name="text">
+                <string>还原</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>

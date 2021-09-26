@@ -34,6 +34,9 @@ void Job::startJob(int type,
     case JobType::BACKUP:
         backup(packPaths, "", destPath);
         break;
+    case JobType::RESTORE:
+        restore(packPaths, "", destPath);
+        break;
     default:
         emit jobFinished("未知任务");
     }
@@ -228,9 +231,9 @@ void Job::unpack(QList<QString> packPaths,
     // 如果是备份，则需要删除源文件
     if (shouldRemoveSource) {
         packFile.remove();
-        emit jobFinished(QString("已备份到：%1").arg(destPath));
+        emit jobFinished(QString("已处理到：%1").arg(destPath));
     } else {
-        emit jobFinished(QString("已还原到：%1").arg(destPath));
+        emit jobFinished(QString("已处理到：%1").arg(destPath));
     }
 }
 //void Job::compress(JobInfo info) {};
@@ -251,7 +254,8 @@ void Job::encrypt(QList<QString> packPaths,
 
     qDebug("%d %d %d", key.dkey, key.ekey, key.pkey);
 
-    QString encFilePath = QString("%1_%2_%3.enc").arg(path).arg(key.pkey).arg(key.dkey);
+    QString encFileName = QString("%1_%2_%3.enc").arg(QFileInfo(path).fileName()).arg(key.pkey).arg(key.dkey);
+    QString encFilePath = QDir(destPath).absoluteFilePath(encFileName);
     QFile outFile(encFilePath);
     outFile.open(QFile::WriteOnly);
     QDataStream out(&outFile);
@@ -267,7 +271,7 @@ void Job::encrypt(QList<QString> packPaths,
     outFile.flush();
     outFile.close();
 
-    emit jobFinished(QString("加密完成"));
+    emit jobFinished(QString("加密完成：%1").arg(encFilePath));
 //    decrypt({}, encFilePath, "", key.pkey, key.dkey);
 };
 
@@ -304,8 +308,33 @@ void Job::decrypt(QList<QString> packPaths,
 
     emit jobFinished("解密完成");
 };
+
 void Job::backup(QList<QString> packPaths,
                  QString path,
                  QString destPath) {
     pack(packPaths, path, destPath, true);
 };
+
+void Job::restore(QList<QString> packPaths, QString path, QString destPath)
+{
+    pack(packPaths, path, destPath, true);
+}
+
+void Job::compress(QList<QString> packPaths, QString path, QString destPath)
+{
+    QFile file(path);
+    if (!file.exists()) return emit jobFinished("待加密文件不存在");
+
+    file.open(QFile::ReadOnly);
+    auto fileContent = file.readAll();
+
+    QFile outFile(path + ".comp");
+    outFile.open(QFile::WriteOnly);
+    QDataStream out(&outFile);
+
+    auto fileContentOut = qCompress(fileContent);
+    out << fileContentOut;
+
+    outFile.flush();
+    outFile.close();
+}

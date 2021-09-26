@@ -17,11 +17,12 @@ public:
     enum JobType {
         PACK,
         UNPACK,
-//        COMPRESS,
-//        DECOMPRESS,
+        COMPRESS,
+        DECOMPRESS,
         ENCRYPT,
         DECTYPRT,
-        BACKUP
+        BACKUP,
+        RESTORE,
     };
 
     quint32 packMagic = 0x12345678;
@@ -42,8 +43,12 @@ public:
                 QString path,
                 QString destPath,
                 bool shouldRemoveSource = false);
-//    void compress(JobInfo info);
-//    void decompress(JobInfo info);
+    void compress(QList<QString> packPaths,
+                  QString path,
+                  QString destPath);
+    void decompress(QList<QString> packPaths,
+                    QString path,
+                    QString destPath);
     void encrypt(QList<QString> packPaths,
                  QString path,
                  QString destPath);
@@ -51,6 +56,9 @@ public:
                  QString path,
                  QString destPath);
     void backup(QList<QString> packPaths,
+                QString path,
+                QString destPath);
+    void restore(QList<QString> packPaths,
                 QString path,
                 QString destPath);
 

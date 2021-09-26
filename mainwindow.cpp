@@ -290,3 +290,17 @@ void MainWindow::on_decrypt_btn_clicked()
     job->start(Job::JobType::DECTYPRT, {}, filePaths[0], destPath);
     gotoJobPage();
 }
+
+void MainWindow::on_restore_btn_clicked()
+{
+    // 还原文件
+    if (selectedPath.count() == 0) return;
+    auto filePaths = getSelectedPath();
+    QString name = getJobName(filePaths);
+    auto job = jobPage->createJob(name, "等待开始", 0);
+
+    // 选择还原路径
+    QString destPath = QFileDialog::getExistingDirectory(this, tr("还原到"));
+    job->start(Job::JobType::BACKUP, filePaths, "", destPath);
+    gotoJobPage();
+}
