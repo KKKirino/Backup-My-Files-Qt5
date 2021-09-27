@@ -272,7 +272,9 @@ void MainWindow::on_encrypt_btn_clicked()
 
     // 选择加密路径
     QString destPath = QFileDialog::getExistingDirectory(this, tr("请选择加密文件存储位置"));
-    int key = QInputDialog::getInt(this, "请输入密钥", "4 位密钥", 1234, 1000, 9999);
+    bool ok = false;
+    int key = QInputDialog::getInt(this, "请输入密钥", "4 位密钥", 1234, 1000, 9999, 1, &ok);
+    if (!ok) return job->onJobFinished("加密任务取消");
     job->start(Job::JobType::ENCRYPT, {}, filePaths[0], destPath, key % 256 - 127);
     gotoJobPage();
 }
@@ -289,7 +291,9 @@ void MainWindow::on_decrypt_btn_clicked()
     // 选择解密路径
     QString destPath = QFileDialog::getExistingDirectory(this, tr("请选择解密文件存储位置"));
 
-    int key = QInputDialog::getInt(this, "请输入密钥", "4 位密钥", 1234, 1000, 9999);
+    bool ok = false;
+    int key = QInputDialog::getInt(this, "请输入密钥", "4 位密钥", 1234, 1000, 9999, 1, &ok);
+    if (!ok) return job->onJobFinished("解密任务取消");
     job->start(Job::JobType::DECTYPRT, {}, filePaths[0], destPath, key % 256 - 127);
     gotoJobPage();
 }
