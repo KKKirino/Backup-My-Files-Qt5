@@ -51,10 +51,12 @@ public:
                     QString destPath);
     void encrypt(QList<QString> packPaths,
                  QString path,
-                 QString destPath);
+                 QString destPath,
+                 char key);
     void decrypt(QList<QString> packPaths,
                  QString path,
-                 QString destPath);
+                 QString destPath,
+                 char key);
     void backup(QList<QString> packPaths,
                 QString path,
                 QString destPath);
@@ -70,7 +72,8 @@ protected slots:
     void startJob(int type,
                   QList<QString> packPaths,
                   QString path,
-                  QString destPath);
+                  QString destPath,
+                  char key = 0);
 };
 
 #endif // JOB_H

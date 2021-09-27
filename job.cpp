@@ -9,7 +9,8 @@ Job::Job(QObject *parent) : QObject(parent)
 void Job::startJob(int type,
                    QList<QString> packPaths,
                    QString path,
-                   QString destPath)
+                   QString destPath,
+                   char key)
 {
     qDebug("starting job");
     switch (type) {
@@ -26,10 +27,10 @@ void Job::startJob(int type,
         decompress(packPaths, path, destPath);
         break;
     case JobType::ENCRYPT:
-        encrypt(packPaths, path, destPath);
+        encrypt(packPaths, path, destPath, key);
         break;
     case JobType::DECTYPRT:
-        decrypt(packPaths, path, destPath);
+        decrypt(packPaths, path, destPath, key);
         break;
     case JobType::BACKUP:
         backup(packPaths, "", destPath);
@@ -241,7 +242,8 @@ void Job::unpack(QList<QString> packPaths,
 //void Job::decompress(JobInfo info) {};
 void Job::encrypt(QList<QString> packPaths,
                   QString path,
-                  QString destPath)
+                  QString destPath,
+                  char key)
 {
     QFile file(path);
     if (!file.exists()) return emit jobFinished("待加密文件不存在");
@@ -249,13 +251,11 @@ void Job::encrypt(QList<QString> packPaths,
     file.open(QFile::ReadOnly);
     auto fileContent = file.readAll();
 
+    qDebug("encrypt %d", key);
+
     Rsa rsa;
-//    Key key = rsa.produce_keys();
-    Key key({221, 185, 137}); // 密钥先写死，不可变
 
-    qDebug("%d %d %d", key.dkey, key.ekey, key.pkey);
-
-    QString encFileName = QString("%1_%2_%3.enc").arg(QFileInfo(path).fileName()).arg(key.pkey).arg(key.dkey);
+    QString encFileName = QString("%1.enc").arg(QFileInfo(path).fileName());
     QString encFilePath = QDir(destPath).absoluteFilePath(encFileName);
     QFile outFile(encFilePath);
     outFile.open(QFile::WriteOnly);
@@ -265,20 +265,21 @@ void Job::encrypt(QList<QString> packPaths,
     for (auto data : fileContent)
     {
         emit jobUpdated(count++, fileContent.size());
-        int encryptData = rsa.endecrypt((int)data, key.ekey, key.pkey);
-        out << encryptData;
+        signed char enc = data ^ key;
+        out << enc;
     }
 
     outFile.flush();
     outFile.close();
 
     emit jobFinished(QString("加密完成：%1").arg(encFilePath));
-//    decrypt({}, encFilePath, "", key.pkey, key.dkey);
+//    decrypt({}, encFilePath, "");
 };
 
 void Job::decrypt(QList<QString> packPaths,
                   QString path,
-                  QString destPath)
+                  QString destPath,
+                  char key)
 {
     QFile file(path);
     if (!path.endsWith(".enc")) return emit jobFinished("不支持的文件类型");
@@ -287,24 +288,20 @@ void Job::decrypt(QList<QString> packPaths,
     file.open(QFile::ReadOnly);
     auto fileContent = file.readAll();
 
+
+    qDebug("decrypt %d", key);
     Rsa rsa;
 
-    QString outFileName = QString("%1.dec").arg(QFileInfo(path).fileName());
+    QString outFileName = QFileInfo(path).fileName().replace(".enc", "");
     QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
     QFile outFile(outFilePath);
     outFile.open(QFile::WriteOnly);
     QDataStream out(&outFile);
 
-    for (int i = 0; i < fileContent.size(); i += 4)
+    for (auto data : fileContent)
     {
-        emit jobUpdated(i, fileContent.size());
-        int data = 0;
-        for (int j = 0; j < 4; j += 1) {
-            data <<= 8;
-            data |= fileContent[i + j];
-        }
-        signed char decryptData = rsa.endecrypt(data, 221, 137);
-        out << decryptData;
+        signed char dec = data ^ key;
+        out << dec;
     }
 
     outFile.flush();

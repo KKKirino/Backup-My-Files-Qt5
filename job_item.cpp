@@ -25,11 +25,13 @@ JobItem::JobItem(QString name, QString status, int progress, QWidget *parent) :
     connect(this, SIGNAL(startJob(int,
                                   QList<QString>,
                                   QString,
-                                  QString)),
-            job, SLOT(startJob(int,
-                                  QList<QString>,
                                   QString,
-                                  QString)));
+                                  char)),
+            job, SLOT(startJob(int,
+                              QList<QString>,
+                              QString,
+                              QString,
+                               char)));
     connect(job, SIGNAL(jobUpdated(int, int)), this, SLOT(onJobUpdated(int, int)));
     connect(job, SIGNAL(jobFinished(QString)), this, SLOT(onJobFinished(QString)));
 
@@ -46,12 +48,13 @@ JobItem::~JobItem()
 void JobItem::start(int type,
                     QList<QString> packPaths,
                     QString path,
-                    QString destPath)
+                    QString destPath,
+                    char key)
 {
     qDebug("controller start");
     targetPath = destPath;
     setToolTip(QString("点击查看 %1").arg(targetPath));
-    emit startJob(type, packPaths, path, destPath);
+    emit startJob(type, packPaths, path, destPath, key);
 }
 
 void JobItem::onJobUpdated(int progress, int total)

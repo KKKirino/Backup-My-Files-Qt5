@@ -6,6 +6,7 @@
 #include <QStackedWidget>
 #include <QSet>
 #include <QFileDialog>
+#include <QInputDialog>
 
 #include "setting_page.h"
 #include "job_page.h"

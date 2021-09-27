@@ -32,13 +32,15 @@ public:
     void start(int type,
                QList<QString> packPaths,
                QString path,
-               QString destPath);
+               QString destPath,
+               char key = 0);
 
 signals:
     void startJob(int type,
                   QList<QString> packPaths,
                   QString path,
-                  QString destPath);
+                  QString destPath,
+                  char key = 0);
 
 public slots:
     void onJobUpdated(int progress, int total);
