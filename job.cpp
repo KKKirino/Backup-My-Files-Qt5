@@ -153,6 +153,7 @@ void Job::unpack(QList<QString> packPaths,
     qDebug("start unpack");
 
     QFile packFile(path);
+    if (!path.endsWith(".pack")) return emit jobFinished("不支持的文件类型");
     if (!packFile.exists()) return emit jobFinished("解包文件不存在");
     packFile.open(QFile::ReadOnly);
 
@@ -280,6 +281,7 @@ void Job::decrypt(QList<QString> packPaths,
                   QString destPath)
 {
     QFile file(path);
+    if (!path.endsWith(".enc")) return emit jobFinished("不支持的文件类型");
     if (!file.exists()) return emit jobFinished("待解密文件不存在");
 
     file.open(QFile::ReadOnly);
@@ -348,6 +350,7 @@ void Job::compress(QList<QString> packPaths, QString path, QString destPath)
 void Job::decompress(QList<QString> packPaths, QString path, QString destPath)
 {
     QFile file(path);
+    if (!path.endsWith(".comp")) return emit jobFinished("不支持的文件类型");
     if (!file.exists()) return emit jobFinished("待加密文件不存在");
 
     file.open(QFile::ReadOnly);
