@@ -304,3 +304,29 @@ void MainWindow::on_restore_btn_clicked()
     job->start(Job::JobType::BACKUP, filePaths, "", destPath);
     gotoJobPage();
 }
+
+void MainWindow::on_zip_btn_clicked()
+{
+    // 压缩文件
+    if (selectedPath.count() != 1) return;
+    auto filePaths = getSelectedPath();
+    QString name = getJobName(filePaths);
+    auto job = jobPage->createJob(name, "等待开始", 0);
+
+    QString destPath = QFileDialog::getExistingDirectory(this, tr("压缩到"));
+    job->start(Job::JobType::COMPRESS, {}, filePaths[0], destPath);
+    gotoJobPage();
+}
+
+void MainWindow::on_unzip_btn_clicked(bool checked)
+{
+    // 解压文件
+    if (selectedPath.count() != 1) return;
+    auto filePaths = getSelectedPath();
+    QString name = getJobName(filePaths);
+    auto job = jobPage->createJob(name, "等待开始", 0);
+
+    QString destPath = QFileDialog::getExistingDirectory(this, tr("解压缩到"));
+    job->start(Job::JobType::DECOMPRESS, {}, filePaths[0], destPath);
+    gotoJobPage();
+}

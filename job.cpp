@@ -19,12 +19,12 @@ void Job::startJob(int type,
     case JobType::UNPACK:
         unpack(packPaths, path, destPath);
             break;
-//    case JobType::COMPRESS:
-//        compress(info);
-//        break;
-//    case JobType::DECOMPRESS:
-//        decompress(info);
-//        break;
+    case JobType::COMPRESS:
+        compress(packPaths, path, destPath);
+        break;
+    case JobType::DECOMPRESS:
+        decompress(packPaths, path, destPath);
+        break;
     case JobType::ENCRYPT:
         encrypt(packPaths, path, destPath);
         break;
@@ -287,7 +287,9 @@ void Job::decrypt(QList<QString> packPaths,
 
     Rsa rsa;
 
-    QFile outFile(path + ".dec");
+    QString outFileName = QString("%1.dec").arg(QFileInfo(path).fileName());
+    QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
+    QFile outFile(outFilePath);
     outFile.open(QFile::WriteOnly);
     QDataStream out(&outFile);
 
@@ -328,12 +330,41 @@ void Job::compress(QList<QString> packPaths, QString path, QString destPath)
     file.open(QFile::ReadOnly);
     auto fileContent = file.readAll();
 
-    QFile outFile(path + ".comp");
+    QString outFileName = QString("%1.comp").arg(QFileInfo(path).fileName());
+    QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
+    QFile outFile(outFilePath);
     outFile.open(QFile::WriteOnly);
-    QDataStream out(&outFile);
 
-    auto fileContentOut = qCompress(fileContent);
-    out << fileContentOut;
+    auto fileContentOut = qCompress(fileContent, 5);
+    outFile.write(fileContentOut);
+    qDebug("compress size %d", fileContentOut.size());
+
+    emit jobFinished(QString("已压缩到：%1").arg(outFilePath));
+
+    outFile.flush();
+    outFile.close();
+}
+
+void Job::decompress(QList<QString> packPaths, QString path, QString destPath)
+{
+    QFile file(path);
+    if (!file.exists()) return emit jobFinished("待加密文件不存在");
+
+    file.open(QFile::ReadOnly);
+    auto fileContent = file.readAll();
+
+    qDebug("file size: %d", fileContent.size());
+    qDebug(path.toUtf8());
+
+    QString outFileName = QFileInfo(path).fileName().replace(".comp", "");
+    QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
+    QFile outFile(outFilePath);
+    outFile.open(QFile::WriteOnly);
+
+    auto fileContentOut = qUncompress(fileContent);
+    outFile.write(fileContentOut);
+
+    emit jobFinished(QString("已解压到：%1").arg(outFilePath));
 
     outFile.flush();
     outFile.close();
