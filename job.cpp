@@ -1,5 +1,9 @@
 #include "job.h"
 #include "rsa.h"
+#include "huffman.h"
+#include <string>
+#include <cstring>
+#include "FileCompressHuffman.h"
 
 Job::Job(QObject *parent) : QObject(parent)
 {
@@ -321,51 +325,80 @@ void Job::restore(QList<QString> packPaths, QString path, QString destPath)
     pack(packPaths, path, destPath, true);
 }
 
+//void Job::compress(QList<QString> packPaths, QString path, QString destPath)
+//{
+//    QFile file(path);
+//    if (!file.exists()) return emit jobFinished("待加密文件不存在");
+
+//    file.open(QFile::ReadOnly);
+//    auto fileContent = file.readAll();
+
+//    QString outFileName = QString("%1.comp").arg(QFileInfo(path).fileName());
+//    QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
+//    QFile outFile(outFilePath);
+//    outFile.open(QFile::WriteOnly);
+
+//    auto fileContentOut = qCompress(fileContent, 5);
+//    outFile.write(fileContentOut);
+//    qDebug("compress size %d", fileContentOut.size());
+
+//    emit jobFinished(QString("已压缩到：%1").arg(outFilePath));
+
+//    outFile.flush();
+//    outFile.close();
+//}
+//void Job::decompress(QList<QString> packPaths, QString path, QString destPath)
+//{
+//    QFile file(path);
+//    if (!path.endsWith(".comp")) return emit jobFinished("不支持的文件类型");
+//    if (!file.exists()) return emit jobFinished("待加密文件不存在");
+
+//    file.open(QFile::ReadOnly);
+//    auto fileContent = file.readAll();
+
+//    qDebug("file size: %d", fileContent.size());
+//    qDebug(path.toUtf8());
+
+//    QString outFileName = QFileInfo(path).fileName().replace(".comp", "");
+//    QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
+//    QFile outFile(outFilePath);
+//    outFile.open(QFile::WriteOnly);
+
+//    auto fileContentOut = qUncompress(fileContent);
+//    outFile.write(fileContentOut);
+
+//    emit jobFinished(QString("已解压到：%1").arg(outFilePath));
+
+//    outFile.flush();
+//    outFile.close();
+//}
 void Job::compress(QList<QString> packPaths, QString path, QString destPath)
 {
     QFile file(path);
-    if (!file.exists()) return emit jobFinished("待加密文件不存在");
-
-    file.open(QFile::ReadOnly);
-    auto fileContent = file.readAll();
-
+    if (!file.exists()) return emit jobFinished("待压缩文件不存在");
     QString outFileName = QString("%1.comp").arg(QFileInfo(path).fileName());
     QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
-    QFile outFile(outFilePath);
-    outFile.open(QFile::WriteOnly);
-
-    auto fileContentOut = qCompress(fileContent, 5);
-    outFile.write(fileContentOut);
-    qDebug("compress size %d", fileContentOut.size());
-
+    string oriPath = path.toStdString();
+    string desPath = outFilePath.toStdString();
+    FileCompressHuffman fH;
+    fH.CompressFile(oriPath, desPath);
     emit jobFinished(QString("已压缩到：%1").arg(outFilePath));
-
-    outFile.flush();
-    outFile.close();
 }
 
 void Job::decompress(QList<QString> packPaths, QString path, QString destPath)
 {
     QFile file(path);
     if (!path.endsWith(".comp")) return emit jobFinished("不支持的文件类型");
-    if (!file.exists()) return emit jobFinished("待加密文件不存在");
-
-    file.open(QFile::ReadOnly);
-    auto fileContent = file.readAll();
-
-    qDebug("file size: %d", fileContent.size());
-    qDebug(path.toUtf8());
+    if (!file.exists()) return emit jobFinished("待解压文件不存在");
 
     QString outFileName = QFileInfo(path).fileName().replace(".comp", "");
     QString outFilePath = QDir(destPath).absoluteFilePath(outFileName);
-    QFile outFile(outFilePath);
-    outFile.open(QFile::WriteOnly);
 
-    auto fileContentOut = qUncompress(fileContent);
-    outFile.write(fileContentOut);
+    string oriPath = path.toStdString();
+    string desPath = outFilePath.toStdString();
+
+    FileCompressHuffman fH;
+    fH.UnCompressFile(oriPath, desPath);
 
     emit jobFinished(QString("已解压到：%1").arg(outFilePath));
-
-    outFile.flush();
-    outFile.close();
 }

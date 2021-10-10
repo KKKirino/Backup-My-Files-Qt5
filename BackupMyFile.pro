@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    FileCompressHuffman.cpp \
     disk_file.cpp \
     fake_data.cpp \
     file_list_item.cpp \
@@ -28,9 +29,13 @@ SOURCES += \
     setting_page.cpp
 
 HEADERS += \
+    FileCompressHuffman.h \
     disk_file.h \
     fake_data.h \
     file_list_item.h \
+    huffman.h \
+    huffman.h \
+    huffman2.hpp \
     job.h \
     job_item.h \
     job_page.h \
